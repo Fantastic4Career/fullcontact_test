@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+  <form>
+    <input type="text" id="search-input"/>
+    <button type="submit" class="search btn btn-default" id="search-button">Search</button>
+  </form>
+  <ul id="results"></ul>
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <script>
+    $(document).ready(function(){
+      $("#search-button").on("click", function(event){
+        $("#results").empty();
+        event.preventDefault();
+        var companyName = $("#search-input").val().trim();
+        $("#search-input").val("");
+        $.ajax({
+          method: 'POST',
+          url : '/api/fullcontact',
+          dataType: 'json',
+          data: {
+            companyName: companyName
+          },
+        })
+        .done(function(response){
+          console.log("response is>>>>", response);
+          for (var i=0; i<response.length; i++){
+            var newElement = $("<li>").text(JSON.stringify(response[i]));
+            $("#results").append(newElement);
+          }
+        })
+        .fail(function(error){
+          console.log("error is>>>>", error);
+        })
+      })
+    })
+  </script>
+</body>
+</html>
